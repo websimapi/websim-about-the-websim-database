@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About The Websim Database</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>The Websim Database</h1>
+            <p class="subtitle">A guide to the built-in, real-time database for creating collaborative applications.</p>
+        </header>
+
+        <main>
+            <section>
+                <h2>Core Concept</h2>
+                <p>The database is accessed via a global <code>WebsimSocket</code> object. It's a persistent, real-time data store designed for multi-user applications. All data is scoped to the specific instance of the application.</p>
+                <pre><code>// Setup is simple and done at the global scope
+const room = new WebsimSocket();</code></pre>
+            </section>
+
+            <section>
+                <h2>Data Structure: Records</h2>
+                <p>Records are JSON-like objects. When you create one, some fields are automatically added and managed for you:</p>
+                <ul>
+                    <li><code>id</code>: A unique identifier for the record.</li>
+                    <li><code>type</code>: A string you define to categorize the record (e.g., 'post', 'comment').</li>
+                    <li><code>username</code>: The username of the user who created the record.</li>
+                    <li><code>created_at</code>: A UTC timestamp of when the record was created.</li>
+                </ul>
+                <p>You can add any other custom fields you need to a record.</p>
+            </section>
+
+            <section>
+                <h2>Basic Operations (CRUD)</h2>
+                
+                <h3>Creating Records</h3>
+                <p>Use the <code>create</code> method on a collection. A collection is a group of records of the same type.</p>
+                <pre><code>// Create a "post" record
+const post = await room.collection('post').create({
+  message: "Hello, real-time world!",
+  likes: 0,
+});</code></pre>
+
+                <h3>Getting Records</h3>
+                <p>Use <code>getList</code> to retrieve records. You can also <code>filter</code> them based on their fields.</p>
+                <pre><code>// Get all records of type "post"
+const posts = room.collection('post').getList();
+
+// Get all comments for a specific post
+const comments = room.collection('comment')
+    .filter({ post_id: post.id })
+    .getList();</code></pre>
+
+                <h3>Updating & Deleting Records</h3>
+                <p>You can only modify or delete records that you have created.</p>
+                <pre><code>// Update a record
+await room.collection('post').update(post.id, {
+  message: "This is an updated message.",
+});
+
+// Delete a record
+await room.collection('post').delete(post.id);</code></pre>
+            </section>
+
+            <section>
+                <h2>Real-time Subscriptions</h2>
+                <p>The most powerful feature is subscribing to data changes. Your code runs immediately with the current data, and then again every time the data is updated.</p>
+                <pre><code>// Subscribe to all changes for "post" records
+const unsubscribe = room.collection('post').subscribe((posts) => {
+  // This function runs whenever the list of posts changes.
+  // You would typically re-render your UI here.
+  console.log("Updated posts:", posts);
+});
+
+// To stop listening for changes:
+// unsubscribe();</code></pre>
+            </section>
+            
+            <section>
+                <h2>React 18 Integration</h2>
+                <p>The database works seamlessly with React's <code>useSyncExternalStore</code> hook, making it easy to build reactive UIs that always show the latest data.</p>
+                <pre><code>import { useSyncExternalStore } from 'react';
+
+function PostList() {
+  // The 'posts' constant will always be up-to-date!
+  const posts = useSyncExternalStore(
+    room.collection('post').subscribe,
+    room.collection('post').getList
+  );
+
+  return (
+    &lt;ul&gt;
+      {posts.map(post => &lt;li key={post.id}&gt;{post.message}&lt;/li&gt;)}
+    &lt;/ul&gt;
+  );
+}</code></pre>
+            </section>
+        </main>
+    </div>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"4c6229722a6346bc8eb5cb0e5eae5d41","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+</html>
+
