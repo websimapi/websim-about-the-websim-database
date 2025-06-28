@@ -26,6 +26,18 @@ const room = new WebsimSocket();</code></pre>
             </section>
 
             <section>
+                <h2>Database Model: NoSQL, Document-Oriented</h2>
+                <p>If you're familiar with database concepts, you might be wondering if this is a SQL database like MySQL/PostgreSQL, or a NoSQL database like MongoDB. The Websim database is a <strong>NoSQL, document-oriented database</strong>.</p>
+                <p>This means:</p>
+                <ul>
+                    <li><strong>Flexible Schema:</strong> Unlike SQL databases, you don't need to define a strict table structure beforehand. You can add new fields to records as you go.</li>
+                    <li><strong>Document-Based:</strong> Data is stored in flexible, JSON-like documents (which we call "records"). This is similar to how MongoDB stores data.</li>
+                    <li><strong>Not Relational:</strong> It's not designed for complex joins between different types of data in the way a relational database is. Instead, relationships are typically handled by embedding data or by storing IDs to reference other records.</li>
+                </ul>
+                <p>The model is conceptually most similar to other real-time databases like Google Firebase's Realtime Database or Firestore.</p>
+            </section>
+
+            <section>
                 <h2>Data Structure: Records</h2>
                 <p>Records are JSON-like objects. When you create one, some fields are automatically added and managed for you:</p>
                 <ul>
@@ -107,4 +119,3 @@ function PostList() {
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"4c6229722a6346bc8eb5cb0e5eae5d41","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
-
